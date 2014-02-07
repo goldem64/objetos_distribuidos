@@ -30,7 +30,7 @@ if(cobrarinteres){
       // Aquí se pone en marcha el timer cada segundo.
      Timer timer = new Timer();
      // Dentro de 3600000 milisegundos avísame cada 3600000 milisegundos es decir una hora
-     timer.scheduleAtFixedRate(timerTask, 0, 360);
+     timer.scheduleAtFixedRate(timerTask, 3600000, 3600000);
     cobrarinteres=false;
 }
 
