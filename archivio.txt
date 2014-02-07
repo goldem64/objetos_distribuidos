@@ -1,2 +1,109 @@
-1: command not found
-0: command not found
+package banco;
+import java.util.TimerTask;
+import java.util.Timer;
+/**
+ *
+ * @author jose
+ */
+public class cuentacredito extends cuenta{
+	private float saldo;
+        private float sedebe=0;
+        private float intereses;
+        cuenta c;
+        private boolean suficiente;
+        private boolean cobrarinteres;
+public cuentacredito (int saldo){
+   cuenta Cuenta=new cuenta();
+   c=Cuenta;
+   operacionretiro(saldo);
+//Se define un saldo inicial
+if(cobrarinteres){
+   TimerTask timerTask = new TimerTask()
+     {
+         public void run()
+         {
+             System.out.println("iniciando el cobro de interes");
+             operacionsaldonegativo(sedebe,(float)1);
+             consultarbalance();
+         }
+     };
+      // Aquí se pone en marcha el timer cada segundo.
+     Timer timer = new Timer();
+     // Dentro de 3600000 milisegundos avísame cada 3600000 milisegundos es decir una hora
+     timer.scheduleAtFixedRate(timerTask, 0, 360);
+    cobrarinteres=false;
+}
+
+}
+
+public void operacionsaldonegativo(float debe,float porcentajeinteres){//1% operacion de saldo con interes
+int miles=diferencianegativa(debe);
+float interes=calcularinteres(miles,porcentajeinteres);
+this.intereses=interes;//seguarda el interes
+float cantidadtotal=saldoconinteres(debe,interes);
+this.sedebe=cantidadtotal;//se guarda lo que se debe
+}
+public void operacionretiro(float monto){//operacion de retiro de credito
+    System.out.print("entra el monto: "+monto);
+suficiente=c.retirar(monto);//checo si es suficiente el saldo
+this.saldo=c.consultarSaldo();//se consulta el saldo
+if(suficiente){
+this.saldo=saldopositivo(monto,this.saldo);//si es suficiente solo hago el retiro
+c.modificarsaldo(this.saldo);//actualizo el saldo
+cobrarinteres=false;
+}else{
+sedebe=saldonegativo(monto,this.saldo)+sedebe;//se suman las diferencias
+if(sedebe>=1000){
+cobrarinteres=true;
+}
+this.saldo=0;
+c.modificarsaldo(this.saldo);
+}
+consultarbalance();
+}
+public int diferencianegativa(float debe){
+    float mil=debe/1000;
+   // System.out.print("el valor debe: "+debe);
+    int valor=(int)mil;
+    //System.out.print("el numero de miles es: "+valor);
+    return valor;
+
+}
+public float calcularinteres(int miles,float porcentajeinteres){
+int valor=miles*1000;//cantidad a cobrar con interes
+float interes=miles*(porcentajeinteres/100);//%interes por cada 1000
+return interes=interes(valor,interes);
+}
+public float saldoconinteres(float monto,float interes){
+//double interes;
+float coninteres=monto+interes;
+return coninteres;
+}
+public float interes(int monto, float interespuntual){//me retorna el valor del interes.
+float interes=monto*interespuntual;//el valor de solo el interes
+System.out.print("el interes es: "+interes);
+return interes;
+}
+//checa el saldo positivo
+public float saldopositivo(float monto,float saldo){
+float diferencia;
+//this.saldo=c.consultarSaldo();//se consulta el saldo
+diferencia=saldo-monto;//diferencia de debito
+//c.modificarsaldo(diferencia);
+return diferencia;
+}
+
+//checa el saldo negativo
+public float saldonegativo(float monto,float saldo){
+ float diferencia;
+    diferencia=monto-saldo;//la diferencia  de credito(se debe)
+    //this.sedebe=diferencia+this.sedebe;
+return diferencia;
+}
+
+public void consultarbalance(){
+System.out.println("su saldo es:  "+this.saldo);
+System.out.println("usted debe:  "+this.sedebe);
+}
+
+}
